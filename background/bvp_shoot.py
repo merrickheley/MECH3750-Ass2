@@ -18,7 +18,7 @@ def runge2(Z, Y, C, x0, x, h=0.1):
 
     return Y
 
-def runge4(Z, Y, C, x0, x, h=0.1):
+def rk4(Z, Y, C, x0, x, h=0.1):
 
     while (x0 < x and floatcmp(x0, x) == False):
         k1 = Z(x0)*Y+C(x0)
@@ -41,13 +41,15 @@ def shoot(Z, C, IC, guess, x, h=0.1):
                       [guess]])
     
     # yF is the value found by the first shot
-    yF = runge4(Z, Y, C, x0, y0, 0.01)
+    yF = rk4(Z, Y, C, x0, y0, 0.01)
     
     return yF
 
 if __name__ == '__main__':
     # u'' - (1-x/5)u = x
     # u(1) = 2, u(3) = -1
+    
+    # u'' = (1-x/5)u + x
     
     # let v = u'
     # z = (u', u'')

@@ -6,7 +6,7 @@ def floatcmp(a, b):
         return True
     return False
 
-def runge4(Z, Y, C, x0, x, h=0.1):
+def rk4(Z, Y, C, x0, x, h=0.1):
 
     while (x0 < x and floatcmp(x0, x) == False):
         k1 = Z(x0)*Y+C(x0)
@@ -57,7 +57,7 @@ def solvebisect(f, a, b, tol1=1e-6, tol2=1e-6):
 def con(Z, C, IC, guess):
     # yV is the desired value
     x0, xV = IC[0]
-    y0, yV  = IC[1]
+    y0, yV = IC[1]
     
     # Use the value of xV and the guess as the starting point
     Y = numpy.matrix([[xV],
@@ -65,7 +65,7 @@ def con(Z, C, IC, guess):
     
     # solve the BVP for y0, return (the value - the value of yV)
     # bisection method is a root finder, this should be 0
-    return runge4(Z, Y, C, x0, y0, 0.01)[0,0] - yV
+    return rk4(Z, Y, C, x0, y0, 0.01)[0,0] - yV
 
 if __name__ == '__main__':
     # u'' - (1-x/5)u = x

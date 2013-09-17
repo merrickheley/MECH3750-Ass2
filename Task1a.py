@@ -1,12 +1,17 @@
 import numpy
 import secant
+import pylab
+
+yd = 0
 
 def floatcmp(a, b):
     if (abs(a-b) < 1e-6):
         return True
     return False
 
-def rk4(Z, Y, C, x0, x, h=0.1):
+def rk4(Z, Y, C, x0, x, h=0.1, vals=False):
+    xlist = [x0]
+    ylist = [Y[0,0]]
 
     while (x0 < x and floatcmp(x0, x) == False):
         k1 = Z(x0)*Y+C(x0)
@@ -16,75 +21,90 @@ def rk4(Z, Y, C, x0, x, h=0.1):
         
         Y = Y + h/6.0 * (k1 + 2.0*k2 + 2.0*k3 + k4)
         x0 = x0 + h
+        
+        if vals==True:
+            xlist.append(x0)
+            ylist.append(Y[0,0])
 
+    if vals==True:
+        return (Y, xlist, ylist)
+    
     return Y
 
-def shoot(Z, C, IC, guess, x, h=0.1):
+def findyd(Z, C, IC, guessyd, guessydd):
     
-    # yV is the desired value
-    x0, xV = IC[0]
-    y0, _  = IC[1]
-    
-    Y = numpy.matrix([[xV],
-                      [guess]])
-    
-    # yF is the value found by the first shot
-    yF = rk4(Z, Y, C, x0, y0, 0.01)
-    
-    return yF
-
-def findyd(Z, C, IC, guess):
-    # yV is the desired value
+    # yV is the desired value at y0, the 2nd IC
     x0, xV = IC[0]
     y0, yV = IC[1]
     
     # Use the value of xV and the guess as the starting point
     Y = numpy.matrix([[xV],
-                      [guess]])
+                      [guessyd],
+                      [guessydd]])
     
-    # solve the BVP for y0, return (the value - the value of yV)
-    # bisection method is a root finder, this should be 0
+    # solve the BVP for y0, return the solved value - the known value
     return rk4(Z, Y, C, x0, y0, 0.01)[0,0] - yV
 
 def findydd(Z, C, IC, guess):
+    global yd
     
-    f = lambda x, Z=Z, C=C, IC=IC: findyd(Z, C, IC, x)
+    # Solve for yd at the current guess for ydd
+    f = lambda x, Z=Z, C=C, IC=IC, guess=guess: findyd(Z, C, IC, x, guess)
     yd = secant.solvesecant(f, 0)
-    
-    # yV is the desired value
-    _, y = IC[0]
-    y0, _ = IC[1]
-    z0, yv = IC[2]
+
+    # yV is the desired value at z0, the 3rd IC
+    x0, y = IC[0]
+    z0, yV = IC[2]
     
     # Use the value of xV and the guess as the starting point
     Y = numpy.matrix([[y],
-                      [yd]
+                      [yd],
                       [guess]])
 
-    # solve the BVP for z0, return (the value - the value of ydd)
-    # bisection method is a root finder, this should be 0
-    return rk4(Z, Y, C, y0, z0, 0.01)[0,0] - yv
+    # solve the BVP for z0, return the solved value - the known value
+    return rk4(Z, Y, C, x0, z0, 0.01)[0,0] - yV
 
 if __name__ == '__main__':
     # -y''' + y'' - 4xy' + (8x+3)y = x^2
     # y(-1) = -10
     # y(0.5) = 1
-    # y(1.5) = 1
+    # y(1.5) = -3
     
     # y''' = y'' - 4xy' + (8x+3)y - x^2
 
-    Z = lambda x:  numpy.matrix([[0, 0, 1],
-                                 [0, 1, 0],
-                                 [1, -4*x, 8*x+3]])
+    # is this Z matrix correct??
+    Z = lambda x:  numpy.matrix([[0, 1, 0],
+                                 [0, 0, 1],
+                                 [8*x+3, -4*x, 1]])
     
     C = lambda x:  numpy.matrix([[0],
                                  [0],
-                                 [x**2]])
+                                 [-(x**2)]])
     
-    IC = [(-1, -10), (0.5, 1), (1.5, 1)]
+    IC = [(-1, -10), (0.5, 1), (1.5, -3)]
     
     f = lambda x, Z=Z, C=C, IC=IC: findydd(Z, C, IC, x)
     
-    print Z(1)
+    ydd = secant.solvesecant(f, 0);
     
-    #print "Scipy Solution: {}".format(secant.solvesecant(f, 0))
+    # Display solution
+    print "Solution Found."
+    print "yd={} \t ydd={}".format(yd, ydd)
+    
+    Y = numpy.matrix([[-10],
+                      [yd],
+                      [ydd]])
+    
+    # Verify solution
+    print "Check at x=  -1: {}".format(rk4(Z, Y, C, -1, -1, 0.01)[0,0])
+    print "Check at x= 0.5: {}".format(rk4(Z, Y, C, -1, 0.5, 0.01)[0,0])
+    print "Check at x= 1.5: {}".format(rk4(Z, Y, C, -1, 1.5, 0.01)[0,0])
+    
+    # Plot solution
+    _, xlist, ylist = rk4(Z, Y, C, -1, 1.5, 0.01, True)
+    
+    pylab.title("Solution to BVP")
+    pylab.xlabel("x"); pylab.ylabel("y")
+    Plot1, = pylab.plot(xlist, ylist, 'b-')
+    pylab.grid()
+    pylab.show()

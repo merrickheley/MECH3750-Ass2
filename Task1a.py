@@ -9,27 +9,35 @@ def floatcmp(a, b):
         return True
     return False
 
-def rk4(Z, Y, C, x0, x, h=0.1, vals=False):
+def rk4_step(Z, Y, C, x0, h=0.1):
+    k1 = Z(x0)*Y+C(x0)
+    k2 = Z(x0)*(Y + 0.5*h*k1)+C(x0)
+    k3 = Z(x0)*(Y + 0.5*h*k2)+C(x0)
+    k4 = Z(x0)*(Y + h*k3)+C(x0)
+    
+    return Y + h/6.0 * (k1 + 2.0*k2 + 2.0*k3 + k4)
+
+def rk4(Z, Y, C, x0, x, h=0.1):
+
+    while (x0 < x and floatcmp(x0, x) == False):
+        Y = rk4_step(Z, Y, C, x0, h)
+        x0 = x0 + h
+
+    return Y
+
+def rk4_vals(Z, Y, C, x0, x, h=0.1):
     xlist = [x0]
     ylist = [Y[0,0]]
 
     while (x0 < x and floatcmp(x0, x) == False):
-        k1 = Z(x0)*Y+C(x0)
-        k2 = Z(x0)*(Y + 0.5*h*k1)+C(x0)
-        k3 = Z(x0)*(Y + 0.5*h*k2)+C(x0)
-        k4 = Z(x0)*(Y + h*k3)+C(x0)
-        
-        Y = Y + h/6.0 * (k1 + 2.0*k2 + 2.0*k3 + k4)
+        Y = rk4_step(Z, Y, C, x0, h)
         x0 = x0 + h
         
-        if vals==True:
-            xlist.append(x0)
-            ylist.append(Y[0,0])
+        xlist.append(x0)
+        ylist.append(Y[0,0])
+        
+    return (xlist, ylist)
 
-    if vals==True:
-        return (Y, xlist, ylist)
-    
-    return Y
 
 def findyd(Z, C, IC, guessyd, guessydd):
     
@@ -41,7 +49,7 @@ def findyd(Z, C, IC, guessyd, guessydd):
     Y = numpy.matrix([[xV],
                       [guessyd],
                       [guessydd]])
-    
+
     # solve the BVP for y0, return the solved value - the known value
     return rk4(Z, Y, C, x0, y0, 0.01)[0,0] - yV
 
@@ -88,7 +96,7 @@ if __name__ == '__main__':
     ydd = secant.solvesecant(f, 0);
     
     # Display solution
-    print "Solution Found."
+    print "Solution found at {}".format(IC[0][0])
     print "yd={} \t ydd={}".format(yd, ydd)
     
     Y = numpy.matrix([[-10],
@@ -101,7 +109,7 @@ if __name__ == '__main__':
     print "Check at x= 1.5: {}".format(rk4(Z, Y, C, -1, 1.5, 0.01)[0,0])
     
     # Plot solution
-    _, xlist, ylist = rk4(Z, Y, C, -1, 1.5, 0.01, True)
+    xlist, ylist = rk4_vals(Z, Y, C, -1, 1.5, 0.01)
     
     pylab.title("Solution to BVP")
     pylab.xlabel("x"); pylab.ylabel("y")

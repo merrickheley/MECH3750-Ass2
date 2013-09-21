@@ -35,13 +35,13 @@ def shoot(Z, C, IC, guess, x, h=0.1):
     
     # yV is the desired value
     x0, xV = IC[0]
-    y0, _  = IC[1]
+    x1, _  = IC[1]
     
     Y = numpy.matrix([[xV],
                       [guess]])
     
     # yF is the value found by the first shot
-    yF = rk4(Z, Y, C, x0, y0, 0.01)
+    yF = rk4(Z, Y, C, x0, x1, 0.01)
     
     return yF
 

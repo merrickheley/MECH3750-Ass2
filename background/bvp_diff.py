@@ -1,30 +1,14 @@
-def cdiff1(f, h, xi):
-    return (1.0/(2.0*h)) * (f(xi + h) - f(xi - h))
+import numpy
 
-def cdiff2(f, h, xi):
-    return (1.0/(h*h)) * (f(xi + h) - 2*f(xi) + f(xi - h))
+def genXMatrix(f, h, x0, xmax):
+    XList = [[f(xi, h)] for xi in numpy.arange(x0, xmax+h, h)]
+    
+    return numpy.matrix(XList)
 
-def inc_range(a, b, stepsize=1):
-    r = []
+def genYMatrix(f, h, x0, xmax):
     
-    while (a <= b):
-        r.append(a)
-        a += stepsize
-        
-    return r
-
-def gen_matrix(IC, h):
-    
-    minIC = IC[0][0]
-    maxIC = IC[-1][0]
-    
-    xn = inc_range(minIC, maxIC, h)
-    
-    u = [None]*xn.__len__()
-    u[0] = IC[0][1]
-    u[-1] = IC[-1][1]
-    
-    print u
+    eNumRange = enumerate(numpy.arange(x0, xmax+h, h))
+    YList = [ f(xi, h) for xn, xi in eNumRange]
     
     
 if __name__ == '__main__':
@@ -38,7 +22,11 @@ if __name__ == '__main__':
     h = 0.5    
     IC = [(1, 2), (3, -1)]
 
-    gen_matrix(IC, h)
+    xFunc = lambda x,h: x*(h**2)
+    yFunc = lambda x,h: [1, 2+(h**2)*(1-x/5.0), 1]
+    
+    genXMatrix(xFunc, h, IC[0][0], IC[-1][0])
+    genYMatrix(yFunc, h, IC[0][0], IC[-1][0])
     
     # Using central difference method (cdiff2)
     # u'' = h^-2 (u_(i+1) - 2u_i + u_(i-1))

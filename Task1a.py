@@ -72,7 +72,6 @@ if __name__ == '__main__':
     
     # y''' = y'' - 4xy' + (8x+3)y - x^2
 
-    # is this Z matrix correct??
     Z = lambda x:  numpy.matrix([[0, 1, 0],
                                  [0, 0, 1],
                                  [8*x+3, -4*x, 1]])

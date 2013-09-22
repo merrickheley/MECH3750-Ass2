@@ -56,28 +56,6 @@ if __name__ == '__main__':
     xList = numpy.arange(IC[0][0], IC[-1][0]+h, h)
     yList = [IC[0][1]] + soln + [IC[-1][1]]
     
-    print "--------------------------------------------"
-    
-    h = 0.25
-    
-    xMat = genXMatrix(xFunc, h, IC[0][0], IC[-1][0])
-    
-    xMat[0,0] -= IC[0][1] 
-    xMat[2,0] -= IC[-1][1]
-    
-    yMat = genYMatrix(yFunc, h, IC[0][0], IC[-1][0])
-    
-    print xMat
-    print yMat
-    
-    soln = numpy.linalg.solve(yMat, xMat)
-    soln = numpy.transpose(soln)
-    soln = soln.tolist()[0]
-    
-    xList2 = numpy.arange(IC[0][0], IC[-1][0]+h, h)
-    yList2 = [IC[0][1]] + soln + [IC[-1][1]]
-    
     pylab.plot(xList, yList, 'b-')
-    pylab.plot(xList2, yList2, 'r-')
     pylab.grid()
     pylab.show()

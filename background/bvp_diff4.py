@@ -23,7 +23,7 @@ def genJMatrix(f, devs, x):
 def solveBVP(fM, fV, h, IC, dSize):
     steps = int((IC[-1][0] - IC[0][0])/h)-1
     
-    P = numpy.array([1.0]*steps)
+    P = numpy.array([0.0]*steps)
     
     for n in range(1000):
         a = genJMatrix(fM, dSize, P)

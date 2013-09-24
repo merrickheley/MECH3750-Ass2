@@ -39,11 +39,11 @@ def rk4_vals(Z, Y, C, x0, x, h=0.1):
     return (xlist, ylist)
 
 
-def findyd(Z, C, IC, guessyd, guessydd):
+def findyd(Z, C, BVs, guessyd, guessydd):
     
-    # yV is the desired value at y0, the 2nd IC
-    x0, xV = IC[0]
-    y0, yV = IC[1]
+    # yV is the desired value at y0, the 2nd BVs
+    x0, xV = BVs[0]
+    y0, yV = BVs[1]
     
     # Use the value of xV and the guess as the starting point
     Y = numpy.matrix([[xV],
@@ -53,16 +53,16 @@ def findyd(Z, C, IC, guessyd, guessydd):
     # solve the BVP for y0, return the solved value - the known value
     return rk4(Z, Y, C, x0, y0, 0.01)[0,0] - yV
 
-def findydd(Z, C, IC, guess):
+def findydd(Z, C, BVs, guess):
     global yd
     
     # Solve for yd at the current guess for ydd
-    f = lambda x, Z=Z, C=C, IC=IC, guess=guess: findyd(Z, C, IC, x, guess)
+    f = lambda x, Z=Z, C=C, BVs=BVs, guess=guess: findyd(Z, C, BVs, x, guess)
     yd = secant.solvesecant(f, 0)
 
-    # yV is the desired value at z0, the 3rd IC
-    x0, y = IC[0]
-    z0, yV = IC[2]
+    # yV is the desired value at z0, the 3rd BVs
+    x0, y = BVs[0]
+    z0, yV = BVs[2]
     
     # Use the value of xV and the guess as the starting point
     Y = numpy.matrix([[y],
@@ -88,14 +88,14 @@ if __name__ == '__main__':
                                  [0],
                                  [-(x**2)]])
     
-    IC = [(-1, -10), (0.5, 1), (1.5, -3)]
+    BVs = [(-1, -10), (0.5, 1), (1.5, -3)]
     
-    f = lambda x, Z=Z, C=C, IC=IC: findydd(Z, C, IC, x)
+    f = lambda x, Z=Z, C=C, BVs=BVs: findydd(Z, C, BVs, x)
     
     ydd = secant.solvesecant(f, 0);
     
     # Display solution
-    print "Solution found at {}".format(IC[0][0])
+    print "Solution found at {}".format(BVs[0][0])
     print "yd={} \t ydd={}".format(yd, ydd)
     
     Y = numpy.matrix([[-10],

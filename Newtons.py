@@ -1,6 +1,4 @@
 import numpy
-import math
-
 
 def genJacobian(f, values, h):
     """
@@ -43,31 +41,4 @@ def iterativeSolve(f, P, h):
         else:
             P = Q
 
-    return P, norm, n #None, n
-#      
-
-if __name__ == '__main__':
-    # x^2 + y^2 = 4
-    # e^x - y   = 1
-    
-    # f1 = x^2 + y^2 - 4
-    # f2 = e^x - y - 1
-    
-    # F = (f1, f2)
-    
-    # Taylor series of a multivariate function about a point
-    # P0 = (x0, y0, z0  .... ) 
-    
-    # F(x, y, z .... ) = F(P0)  + J(F(P0)) . (x - x0, y - y0, z - z0, ....)
-    
-    # J(xi, yi) = (  d/dx f1(Pi)        d/dy f1(Pi) )
-    #             (  d/dx f2(Pi)        d/dy f2(Pi) )
-    #
-    #           = (  2*x_i               2*y_i      )
-    #             (  e^(x_i)             -1         )
-    
-    f = [lambda x,y: x**2 + y**2 - 4, lambda x,y: math.exp(x) - y - 1]
-    
-    P = numpy.array([-1.0, -1.0])
-    
-    print iterativeSolve(f, P, 0.01)
+    return None, norm, n #None, n

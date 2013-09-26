@@ -18,14 +18,14 @@ def genJacobian(f, values, h):
         for j in range(0, dim):
             v = numpy.copy(values)
             v[j] += h
-            rows.append((f[i](*v) - f[i](*values))/h )
+            rows.append((f[i](v) - f[i](values))/h )
             
         cols.append(rows);
         
     return numpy.asmatrix(cols)
 
 def genX(f, values):
-    return numpy.array([-fi(*values) for fi in f])
+    return numpy.array([-fi(values) for fi in f])
 
 def iterativeSolve(f, P, h):
     

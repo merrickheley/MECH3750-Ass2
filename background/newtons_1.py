@@ -7,7 +7,7 @@ def genJacobian(f, values, h):
     Generate the jacobi matrix
     
     f: list of functions
-    v: numpy array of values
+    v: tuple of values
     h: step size
     
     """
@@ -18,7 +18,7 @@ def genJacobian(f, values, h):
     for i in range(0, dim):
         rows = []
         for j in range(0, dim):
-            v = numpy.copy(values)
+            v = list(values)
             v[j] += h
             rows.append((f[i](*v) - f[i](*values))/h )
             
@@ -35,7 +35,8 @@ def iterativeSolve(f, P, h):
         J = genJacobian(f, P, h)
         X = genX(f, P)
         
-        Q = P + numpy.linalg.solve(J, X)
+        
+        Q = P + numpy.linalg.solve(J, P)
         
         norm = numpy.linalg.norm(Q-P)
         if norm < 1e-6:
@@ -57,8 +58,8 @@ if __name__ == '__main__':
     
     # Taylor series of a multivariate function about a point
     # P0 = (x0, y0, z0  .... ) 
-    
     # F(x, y, z .... ) = F(P0)  + J(F(P0)) . (x - x0, y - y0, z - z0, ....)
+    
     
     # J(xi, yi) = (  d/dx f1(Pi)        d/dy f1(Pi) )
     #             (  d/dx f2(Pi)        d/dy f2(Pi) )
@@ -68,6 +69,6 @@ if __name__ == '__main__':
     
     f = [lambda x,y: x**2 + y**2 - 4, lambda x,y: math.exp(x) - y - 1]
     
-    P = numpy.array([-1.0, -1.0])
+    P = numpy.array([1.0, 1.0])
     
     print iterativeSolve(f, P, 0.01)

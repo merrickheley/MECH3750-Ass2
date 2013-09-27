@@ -1,69 +1,74 @@
 import numpy
 import pylab
 
-import Newtons
-
 def floatcmp(a, b):
     if (abs(a-b) < 1e-6):
         return True
     return False
 
-def genFuncList(f, BVs, h):
-    funcList = []
+def afRange(start, stop, step):
     
-    s = int((BVs[-1][0] - BVs[0][0])/h) -1
+    val = start
+    retList = []
+    
+    while (val < stop and floatcmp(val, stop) == False):
+        retList.append(val)
+        val += step
+    
+    return retList
+    
+def genXMatrix(f, BVs, h):
+    
+    XList = []
+    
+    XList += [f(x, h) for x in afRange(BVs[0][0]+h, BVs[-1][0], h)]
+    
+    return numpy.array(XList)
+    
+def genJMatrix(f, BVs, h):
 
-    #print BVs[0][0]+h
-    funcList.append(lambda y, BVs=BVs, h=h: f(BVs[0][1], BVs[0][1], y[0], y[1], y[2], BVs[0][0]+h,   h))
-    funcList.append(lambda y, BVs=BVs, h=h: f(BVs[0][1],      y[0], y[1], y[2], y[3], BVs[0][0]+2*h, h))
+    xV =afRange(BVs[0][0]+h, BVs[-1][0], h)
+    size = len(xV)
     
-    for i in range(2, s-2):
-        if   (floatcmp(BVs[0][0]+i*h, BVs[1][0]-2*h)):
-            funcList.append(lambda y, BVs=BVs, h=h, i=i: f(y[i-2], y[i-1], y[i], y[i+1], BVs[1][1], BVs[0][0]+i*h, h))
-        elif (floatcmp(BVs[0][0]+i*h, BVs[1][0]-h)):
-            funcList.append(lambda y, BVs=BVs, h=h, i=i: f(y[i-2], y[i-1], y[i], BVs[1][1], y[i+2], BVs[0][0]+i*h, h))
-        elif (floatcmp(BVs[0][0]+i*h, BVs[1][0])):
-            funcList.append(lambda y, BVs=BVs, h=h, i=i: f(y[i-2], y[i-1], BVs[1][1], y[i+1], y[i+2], BVs[0][0]+i*h, h))
-        elif (floatcmp(BVs[0][0]+i*h, BVs[1][0]+h)):
-            funcList.append(lambda y, BVs=BVs, h=h, i=i: f(y[i-2], BVs[1][1], y[i], y[i+1], y[i+2], BVs[0][0]+i*h, h))
-        elif (floatcmp(BVs[0][0]+i*h, BVs[1][0]+2*h)):
-            funcList.append(lambda y, BVs=BVs, h=h, i=i: f(BVs[1][1], y[i-1], y[i], y[i+1], y[i+2], BVs[0][0]+i*h, h))
-        else:
-            funcList.append(lambda y, BVs=BVs, h=h, i=i: f(y[i-2], y[i-1], y[i], y[i+1], y[i+2], BVs[0][0]+i*h, h))
-            
-#         funcList.append(lambda y, BVs=BVs, h=h, i=i: f(y[i-2], y[i-1], y[i], y[i+1], y[i+2], BVs[0][0]+i*h, h))
-        
-    #print BVs[0][0]+s*h
-    funcList.append(lambda y, BVs=BVs, h=h, s=s: f(y[-4], y[-3], y[-2],      y[-1], BVs[-1][1],  BVs[0][0]+(s-1)*h, h))
-    funcList.append(lambda y, BVs=BVs, h=h, s=s: f(y[-3], y[-2], y[-1], BVs[-1][1], BVs[-1][1],  BVs[0][0]+s*h,     h))
     
-    return funcList, s
+    YList = [[0]*i +  f(x, h) + [0]*(size - 1 - i) for i,x in enumerate(xV)]
+    
+    return numpy.matrix(YList)[:, 2:-2]
 
-def f(y1, y2, y3, y4, y5, x, h):
-    return -(y5- 2*y4 + 2*y2 - y1) \
-            + (2*h)*(y4 - 2*y3 + y2) \
-            - (4*x)*(h**2)*(y4 - y2) \
-            + (2*(h**3))*(8*x + 3)*y3 \
-            - (2*(h**3))*(x**2)
+def f(x, h):
+    return [1,
+            -2 + 2*h + 4*x*(h**2),
+            -4*h + 2*(h**3)*(8*x + 3),
+            2 + 2*h - 4*x*(h**2),
+            -1]
 
 if __name__ == '__main__':
     
-    h = 0.1
-    BVs = [(-1, -10), (0.5, 1), (1.5, -3)]
+    h = 0.001
+    BV = [(-1, -10), (0.5, 1), (1.5, -3)]
     
-#     print f(-10,          -8.566836952, -7.340934643, -6.26784425,  -5.307783366, -0.8, 0.1)
-#     print f(-2.162489948, -1.50615673,  -0.903244266, -0.361023112,  0.111049313,    0, 0.1)
+    Xvals = []
+    Yvals = []
     
-    funcList, num = genFuncList(f, BVs, h)
-      
-    P = numpy.array([100.0]*num)
-      
-    Yvals = [BVs[0][1]]
-    Yvals += list(Newtons.iterativeSolve(funcList, P, h)[0])
-    Yvals.append(BVs[-1][1])
-      
-    Xvals = [BVs[0][0]+x*h for x in range(0, num+2)]
-      
+    for i in range(2):
+        BVs= BV[i:i+2]
+        print BVs
+        
+        Xi = lambda x,h: 2*(h**3)*(x**2)
+        
+        X = genXMatrix(Xi, BVs, h)
+        J = genJMatrix(f,  BVs, h)
+        
+        X[0] -= BVs[0][1] + (-2 + 2*h + 4*(BVs[0][0]+h)*(h**2))*BVs[0][1]
+        X[1] -= BVs[0][1]
+        
+        X[-2] -= -BVs[-1][1]
+        X[-1] -= (2 + 2*h - 4*(BVs[-1][0]-h)*(h**2))*BVs[-1][1] - BVs[-1][1]
+        
+        print i
+        Xvals += afRange(BVs[0][0]+h, BVs[-1][0], h)
+        Yvals += list(numpy.linalg.solve(J, X))
+     
     pylab.title("Solution to BVP")
     pylab.xlabel("x"); pylab.ylabel("y")
     Plot1, = pylab.plot(Xvals, Yvals, 'b-')

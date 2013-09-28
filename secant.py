@@ -26,6 +26,8 @@ if __name__ == '__main__':
          lambda x: 5*x**5 - x**4 + 3**x + math.sqrt(abs(x)) + x*math.sin(x**2)]
 
     for i in f:
-        print "Scipy Solution: {}".format(scipy.optimize.newton(i, -10, maxiter=500))
-        print "My Solution: {}".format(solvesecant(i, 10, 1e-12, 1e-12, maxiter=500))
+        print "Scipy Solution: {}".format(scipy.optimize.newton(i, -10, \
+                                                                maxiter=500))
+        print "My Solution: {}".format(solvesecant(i, 10, 1e-12, 1e-12, \
+                                                   maxiter=500))
         print "----"

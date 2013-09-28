@@ -1,0 +1,89 @@
+\documentclass[a4paper,11pt,titlepage]{article}
+% The maths package
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% The graphics package
+\usepackage{graphicx}
+% Allows paragraph in blocks
+\usepackage{parskip}
+% Code hightling
+\usepackage{minted}
+% Verbatim file inclusion
+\usepackage{fancyvrb}
+
+%%%% Define the title %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{
+MECH3750 Engineering Analysis II \\ 
+Assignment 2
+}
+% define the author
+\author{
+Merrick Heley\\
+42339915
+}
+
+%%%% Notes, commands, settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section*{Task 1} uses an asterisk to suppress the section number
+
+% This command adds \ud for finishing integrals
+\newcommand{\ud}{\,\mathrm{d}}
+
+% Set the pygmentation style for code
+% pygmentize -L styles
+\usemintedstyle{autumn}
+
+% Simple command for python file input
+\newcommand{\inputpython}[1]{
+    \inputminted[linenos=true, 
+                 frame=single, 
+                 fontsize=\scriptsize, 
+                 label=#1]
+                {python}{#1}
+}
+
+% Simple command for python file output
+\newcommand{\pythonoutput}[1]{
+    \immediate\write18{python #1 > #1.out}
+    \fvset{frame=single, numbers=left, fontsize=\scriptsize, label=#1.out}
+    \VerbatimInput{#1.out}
+    \write18{del #1.out}
+}
+
+%%%% Start document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+% generates the title
+\maketitle
+
+%%%% Question 0.1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Question 0.1: Boundary Value Problems}
+\subsection*{a. Shooting Method}
+
+\subsection*{b. Lehmer-Shur Algorithm}
+
+\subsection*{c. Difference Method}
+
+\subsection*{d. Non-Linear Difference Method}
+
+%%%% Question 0.2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Question 0.2: Newtons Method}
+\subsection*{a. Single Solution}
+
+\subsection*{b. Solutions in $\mathbb{C}$}
+
+\subsection*{c. Proof of number of solutions}
+
+\subsection*{d. Maxima Brute-force}
+
+
+%%%% APPENDICES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section*{Appendix A}
+% Bisection method in appendix (shitty, and not correct way of doing appendices)
+\inputpython{secant.py}
+\pythonoutput{secant.py}
+
+
+
+\clearpage
+\end{document}

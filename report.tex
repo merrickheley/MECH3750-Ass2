@@ -10,6 +10,10 @@
 \usepackage{minted}
 % Verbatim file inclusion
 \usepackage{fancyvrb}
+% For loops
+\usepackage{pgf,pgffor}
+% For placing figures
+\usepackage{float}
 
 %%%% Define the title %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{
@@ -68,16 +72,98 @@ Merrick Heley\\
 \section*{Question 0.1: Boundary Value Problems}
 \subsection*{a. Shooting Method}
 
-\subsection*{b. Lehmer-Shur Algorithm}
-
-\subsection*{c. Difference Method}
-
 \begin{align}
 -y'''(x) + y''(x) - 4xy'(x) + (8x + 3)y(x) &= x^2 \label{eq:q1bvp}\\
 y(-1) & = -10 \notag\\
 y(0.5) & = 1 \notag\\
 y(1.5) & = -3 \notag
 \end{align}
+
+The first step to solving this problem is to rearrange the equation for $y'''$.
+
+\begin{equation}
+y''' = (1)y'' + (-4x)y' + (8x + 3)y - x^2
+\end{equation}
+
+The equation can then be put into matrix form
+\begin{equation}
+\begin{bmatrix}
+y' \\
+y'' \\
+y'''
+\end{bmatrix}
+=
+\begin{bmatrix}
+    0       &   1       &   0 \\
+    0       &   0       &   1 \\
+    8x+3    &   -4x     &   1
+\end{bmatrix}
+\begin{bmatrix}
+y \\
+y' \\
+y''
+\end{bmatrix}
++
+\begin{bmatrix}
+0 \\
+0 \\
+-x^2
+\end{bmatrix}\label{eq:rk4mat}
+\end{equation}
+or
+\begin{equation}
+F(x, Y) = Z(x)Y + C(x) \label{eq:rk4func}
+\end{equation}
+
+which is compatible with a Runge-Kutta 4 (RK4) ODE solver.
+
+Runge-Kutta 4 is an iterative ODE solver of the form:
+\begin{align}
+k_1 & = F(x_i, Y_i) \notag\\
+k_2 & = F(x_i + 0.5h, Y_i + 0.5*h*k1) \notag\\
+k_3 & = F(x_i + 0.5h, Y_i + 0.5*h*k2) \notag\\
+k_4 & = F(x_i + h, Y_i + h*k3) \notag\\
+Y_{i+1} & = Y_i + \frac{1}{6}\left(k_1 + 2k_2 + 2k_3 + k_4\right) \notag
+\end{align}
+which will allow for a solution to be generated at a given x value where
+the initial values and starting x value are given.
+
+In this case, the initial values are the values for $y$, $y'$ and $y''$ 
+which are given for the Y matrix as shown in 
+\eqref{eq:rk4mat}, and the function \eqref{eq:rk4func} is passed to the RK4 
+solver as the ODE equation.
+
+Shooting method operates by letting the user take a guess at the initial values 
+for the solution, and then compare it with the known boundary values, 
+essentially implementing a 'guess and check' approach.
+
+To check the correctness of the guess, the values obtained by using RK4 solver 
+have been recorded at each step and plotted against the boundary values. 
+Various guesses have been included, as seen in line 109, ``\# Array of guesses''.
+
+\inputpython{Task1a.py}
+\pythonoutput{Task1a.py}
+
+\foreach \x [count=\xi] in {0,...,7} {%
+    \begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Guess\x.png}
+    \caption{Solution to BVP from guess \xi}
+    \end{figure}
+}
+
+\subsection*{b. Lehmer-Shur Algorithm}
+
+\inputpython{Task1b.py}
+\pythonoutput{Task1b.py}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{Task1b.png}
+\caption{Solution to BVP using Shooting Method with Secant}
+\end{figure}
+
+\subsection*{c. Difference Method}
 
 To solve this boundary value problem using difference method, approximations 
 must be formed using a difference approximation. To keep the problem simple, a 
@@ -160,7 +246,7 @@ These generated matrices are shown in the output of the python code.
 \inputpython{Task1c.py}
 \pythonoutput{Task1c.py}
 
-\begin{figure}[!hbp]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{Task1c.png}
 \caption{Solution to BVP using Difference Method}

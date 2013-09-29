@@ -25,10 +25,13 @@ def rk4_step(Z, Y, C, x0, h=0.1):
     
     return new Y, initial conditions for system of equations at x0+h
     """
-    k1 = Z(x0)*Y+C(x0)
-    k2 = Z(x0)*(Y + 0.5*h*k1)+C(x0)
-    k3 = Z(x0)*(Y + 0.5*h*k2)+C(x0)
-    k4 = Z(x0)*(Y + h*k3)+C(x0)
+    
+    F = lambda x, U: Z(x)*U + C(x)
+    
+    k1 = F(x0, Y)
+    k2 = F(x0 + 0.5*h, Y + 0.5*h*k1)
+    k3 = F(x0 + 0.5*h, Y + 0.5*h*k2)
+    k4 = F(x0 + h, Y + h*k3)
     
     return Y + h/6.0 * (k1 + 2.0*k2 + 2.0*k3 + k4)
 
@@ -178,9 +181,15 @@ if __name__ == '__main__':
     # Plot solution
     xlist, ylist = rk4_vals(Z, Y, C, -1, 1.5, 0.01)
     
+    # Convert the Boundary values to points
+    BVx = numpy.array(BVs)[:,0]
+    BVy = numpy.array(BVs)[:,1]
+    
     pylab.title("Solution to BVP")
     pylab.xlabel("x"); pylab.ylabel("y")
     Plot1, = pylab.plot(xlist, ylist, 'b-')
+    Plot2, = pylab.plot(BVx, BVy, 'ro')
     pylab.grid()
-    #pylab.show()
+    pylab.legend([Plot1, Plot2], ["Solution for y", "Boundary Values"], loc=2)
+    pylab.show()
     pylab.savefig('Task1a.png')

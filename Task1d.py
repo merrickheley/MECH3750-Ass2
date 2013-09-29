@@ -53,11 +53,17 @@ if __name__ == '__main__':
     Yvals += list(Newtons.iterativeSolve(funcList, P, h)[0])
     Yvals.append(BVs[-1][1])
     
+    # Convert the Boundary values to points
+    BVx = numpy.array(BVs)[:,0]
+    BVy = numpy.array(BVs)[:,1]
+    
     # Plot the values
     pylab.title("Solution to BVP")
     pylab.xlabel("x"); pylab.ylabel("y")
     Plot1, = pylab.plot(Xvals, Yvals, 'b-')
+    Plot2, = pylab.plot(BVx, BVy, 'ro')
     pylab.grid()
-    #pylab.show()
+    pylab.legend([Plot1, Plot2], ["Solution for y", "Boundary Values"], loc=2)
+    pylab.show()
     pylab.savefig('Task1d.png')
     

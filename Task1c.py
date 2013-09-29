@@ -166,11 +166,19 @@ if __name__ == '__main__':
     xlist = afRange(BVs[0][0], BVs[-1][0]+h, h) 
     ylist = numpy.linalg.solve(J, X)
     
+    print "Solution list"
+    print ylist
+    
+    # Convert the Boundary values to points
+    BVx = numpy.array(BVs)[:,0]
+    BVy = numpy.array(BVs)[:,1]
+    
     # Plot solution
     pylab.title("Solution to BVP")
     pylab.xlabel("x"); pylab.ylabel("y")
     Plot1, = pylab.plot(xlist, ylist, 'b-')
+    Plot2, = pylab.plot(BVx, BVy, 'ro')
     pylab.grid()
-    pylab.legend([Plot1], ["Solution for y"], loc=2)
+    pylab.legend([Plot1, Plot2], ["Solution for y", "Boundary Values"], loc=2)
     #pylab.show()
     pylab.savefig('Task1c.png')

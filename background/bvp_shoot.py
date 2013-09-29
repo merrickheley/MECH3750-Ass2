@@ -5,13 +5,11 @@ def floatcmp(a, b):
         return True
     return False
 
-def runge2(Z, Y, C, x0, x, h=0.1):
-    
-    print(x0, x)
+def rk2(Z, Y, C, x0, x, h=0.1):
     
     while (x0 < x and floatcmp(x0, x) == False):
         k1 = Z(x0)*Y+C(x0)
-        k2 = Z(x0)*(Y + h*k1)+C(x0)
+        k2 = Z(x0+h)*(Y + h*k1)+C(x0+h)
         
         Y = Y + 0.5*h*(k1 + k2)
         x0 = x0+h
@@ -41,7 +39,7 @@ def shoot(Z, C, IC, guess, x, h=0.1):
                       [guess]])
     
     # yF is the value found by the first shot
-    yF = rk4(Z, Y, C, x0, x1, 0.01)
+    yF = rk2(Z, Y, C, x0, x1, 0.1)
     
     return yF
 

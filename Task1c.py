@@ -1,6 +1,8 @@
 import numpy
 import pylab
 
+numpy.set_printoptions(suppress=True)
+
 def floatcmp(a, b):
     """
     Simple float comparison. Return true for 'equal' (within threshold)
@@ -153,6 +155,12 @@ if __name__ == '__main__':
     # Handle difference approximation at boundaries
     J[1,  0:5] = fForward(BVs[0][0]+h, h)
     J[-2, -5:] = fBackward(BVs[-1][0]+h, h)
+    
+    print "X matrix:"
+    print X
+    
+    print "J matrix:"
+    print J
         
     # Get the xlist, solve for the ylist
     xlist = afRange(BVs[0][0], BVs[-1][0]+h, h) 
@@ -163,4 +171,6 @@ if __name__ == '__main__':
     pylab.xlabel("x"); pylab.ylabel("y")
     Plot1, = pylab.plot(xlist, ylist, 'b-')
     pylab.grid()
-    pylab.show()
+    pylab.legend([Plot1], ["Solution for y"], loc=2)
+    #pylab.show()
+    pylab.savefig('Task1c.png')

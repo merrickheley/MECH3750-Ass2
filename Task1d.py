@@ -58,6 +58,6 @@ if __name__ == '__main__':
     pylab.xlabel("x"); pylab.ylabel("y")
     Plot1, = pylab.plot(Xvals, Yvals, 'b-')
     pylab.grid()
-    pylab.show()
-    
+    #pylab.show()
+    pylab.savefig('Task1d.png')
     

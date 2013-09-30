@@ -79,7 +79,7 @@ y(0.5) & = 1 \notag\\
 y(1.5) & = -3 \notag
 \end{align}
 
-The first step to solving this problem is to rearrange the equation for $y'''$.
+The first step to solving this problem is to rearrange the equation for $y'''$
 
 \begin{equation}
 y''' = (1)y'' + (-4x)y' + (8x + 3)y - x^2
@@ -110,7 +110,7 @@ y''
 -x^2
 \end{bmatrix}\label{eq:rk4mat}
 \end{equation}
-or
+Also expressed as
 \begin{equation}
 F(x, Y) = Z(x)Y + C(x) \label{eq:rk4func}
 \end{equation}
@@ -125,8 +125,8 @@ k_3 & = F(x_i + 0.5h, Y_i + 0.5*h*k2) \notag\\
 k_4 & = F(x_i + h, Y_i + h*k3) \notag\\
 Y_{i+1} & = Y_i + \frac{1}{6}\left(k_1 + 2k_2 + 2k_3 + k_4\right) \notag
 \end{align}
-which will allow for a solution to be generated at a given x value where
-the initial values and starting x value are given.
+which allows for the next Y value to be generated from the current Y value
+(the initial values), the x value and the step size.
 
 In this case, the initial values are the values for $y$, $y'$ and $y''$ 
 which are given for the Y matrix as shown in 

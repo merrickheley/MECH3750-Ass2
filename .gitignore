@@ -8,3 +8,4 @@
 *.log
 *.pyg
 *.png
+!Task2aplot.png

@@ -322,21 +322,104 @@ in detail in Question 0.2: Newtons Method.
 \section*{Question 0.2: Newtons Method}
 \subsection*{a. Single Solution}
 
+\begin{align}
+x^3 + 3x^2y - 2xy^2 - 7y^3 & = -604894015496000 \label{eq:newt1}\\
+-15x^2 - 57xy - 67y^2 & = -26864190700 \label{eq:newt2}
+\end{align}
+
+This is a system of equations with two equations and two unknowns. As such, it 
+is solvable using a multi-dimensional Newtons method. Multidimensional Newtons 
+method is an application of the truncated Taylor series
+
+\begin{equation}
+x_1 = x_0 - \frac{f(x_0)}{f'(x_0)} \notag
+\end{equation}
+
+that is expanded for a system of equations and repeated until the change 
+falls below a threshold. When expanding this system, as there are multiple 
+variables, partial derivatives must be used for each equation.
+
+\begin{equation}
+F(x,y,...) \approx
+\begin{bmatrix}
+f_1 (P_0) \\
+f_1 (P_0) \\
+\vdots
+\end{bmatrix}
++
+\begin{bmatrix}
+    \frac{\partial}{\partial x} f_1 (P_0) & \frac{\partial}{\partial y} f_1 (P_0) &   \ldots \\
+    \frac{\partial}{\partial x} f_2 (P_0) & \frac{\partial}{\partial y} f_2 (P_0) &   \ldots \\
+    \vdots    &   \vdots     &   \ddots
+\end{bmatrix}
+.
+\begin{bmatrix}
+x - x_0 \\
+y - y_0 \\
+\vdots
+\end{bmatrix}
+\end{equation}
+
+Which can be iterated over until the matrices reach equilibrium (i.e. the 
+change in the matrix falls below a threshold) after an initial guess is given.
+
+To solve this particular system of equations, only a 2 variable system is needed.
+However, a general solution (as has been implemented below), will generate the 
+system based on the number of equations given to it. The can be used to solve 
+not only this system of equations, but other systems of equations (and is used 
+to solve Task 1d).
+
+\inputpython{Newtons.py}
+
+It was found for this system of equations that real guesses for the system 
+would not find equilibrium, i.e. the system had no real solutions 
+(which can be verified by plotting the equations). As such, 
+a complex guess was used to find a complex solution.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{Task2aplot.png}
+\caption{Plot of \eqref{eq:newt1} \eqref{eq:newt2} in $\mathbb{R}$}
+\end{figure}
+
+\inputpython{Task2a.py}
+\pythonoutput{Task2a.py}
+
 \subsection*{b. Solutions in $\mathbb{C}$}
+
+As the system can be observed to have approximately 6 solutions, with 
+3 unique sets of values and 3 complex conjugates, complex conjugate guesses 
+were used (shown in c. Proof of number of solutions).
+
+As such, complex conjugate initial guesses were used that had an increasingly 
+large absolute value were used. The guesses that gave unique solutions were 
+included below.
+
+If no information about the nature of the solutions could be deduced (such as 
+the solutions would be complex conjugates of each other), a brute-force method 
+for a sample of complex values in a range should be used (similar to d. Maxima 
+Brute-force), and unique solutions should be recorded.
+
+\inputpython{Task2b.py}
+\pythonoutput{Task2b.py}
 
 \subsection*{c. Proof of number of solutions}
 
 \subsection*{d. Maxima Brute-force}
+
+To verify there are no real, whole number solutions, Maxima code was written 
+that guesses every value of x and y in a very large range and checks if this 
+solves the equations. This would take an extremely long time to run, and 
+would yield no results.
+
 \inputmaxima{Task2d.wxm}
 
 %%%% APPENDICES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section*{Appendix A}
-% Bisection method in appendix (shitty, and not correct way of doing appendices)
+% Secant method in appendix (shitty, and not correct way of doing appendices)
 \inputpython{secant.py}
 \pythonoutput{secant.py}
-
-
 
 \clearpage
 \end{document}

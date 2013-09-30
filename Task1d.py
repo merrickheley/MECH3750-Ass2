@@ -46,14 +46,15 @@ if __name__ == '__main__':
     
     # Initial guess
     P = numpy.array([1.0]*num)
-    
-    print funcList
-    
+
     # Values for plotting, include the values returned by Newtons solve
     Xvals = [BVs[0][0]+x*h for x in range(0, num+2)]
     Yvals = [BVs[0][1]]
     Yvals += list(Newtons.iterativeSolve(funcList, P, h)[0])
     Yvals.append(BVs[-1][1])
+    
+    print "Solution for h = {}".format(h)
+    print numpy.array(Yvals)
     
     # Convert the Boundary values to points
     BVx = numpy.array(BVs)[:,0]

@@ -47,6 +47,8 @@ if __name__ == '__main__':
     # Initial guess
     P = numpy.array([1.0]*num)
     
+    print funcList
+    
     # Values for plotting, include the values returned by Newtons solve
     Xvals = [BVs[0][0]+x*h for x in range(0, num+2)]
     Yvals = [BVs[0][1]]
@@ -64,6 +66,6 @@ if __name__ == '__main__':
     Plot2, = pylab.plot(BVx, BVy, 'ro')
     pylab.grid()
     pylab.legend([Plot1, Plot2], ["Solution for y", "Boundary Values"], loc=2)
-    pylab.show()
+    #pylab.show()
     pylab.savefig('Task1d.png')
     

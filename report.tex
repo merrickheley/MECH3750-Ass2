@@ -169,7 +169,8 @@ top level secant method guesses a value for $y''$ and calls the findydd
 function. The findydd function then calls another secant method, which 
 guesses a value for $y'$ and calls the function findyd. 
 
-The findyd treats $y''$ as a constant, and the secant method finds a value for 
+The function
+findyd treats $y''$ as a constant, and the secant method finds a value for 
 $y'$ that satisfies the first boundary value. This value for $y'$ is then 
 passed up to the findydd function, which checks if the solution satisfies 
 the second boundary condition. If it does, the secant method has found a 
@@ -221,6 +222,7 @@ x_i^2 & = \left(\frac{1}{2h^3}\right)y_{i-2} + \notag\\
 y' & = \frac{1}{h}(y_{i+1} - y_i) \label{eq:forward1}\\
 \intertext{And deriving \eqref{eq:central2} with \eqref{eq:forward1} gives}
 y''' & = \frac{1}{h^3}(y_{i+2} - 3y_{i+1} + y_i - y_{i_1}) \label{eq:forward3}\\
+\intertext{Note that this is NOT a third order forward difference.}
 \intertext{Substituting \eqref{eq:central1} \eqref{eq:central2} \eqref{eq:forward3}
             in to \eqref{eq:q1bvp} and rearranging to group $y_i$ values together}
 x_i^2 & = \left(0\right)y_{i-2} + \notag\\
@@ -241,7 +243,7 @@ x_i^2 & = \left(\frac{1}{h^3}\right)y_{i-2} + \notag\\
       & \left(0\right)y_{i+2} \label{eq:bvpbackward}
 \intertext{This equation is modelled in the function 'fBackward(x, h)' in the code}\notag
 \end{align}
-To generate a solution to this equation, it is necessary to solve the equation
+To generate a solution to this equation, it is necessary to solve
 \begin{equation}
 JY = X
 \end{equation}
@@ -315,7 +317,19 @@ in detail in Question 0.2: Newtons Method.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{Task1d.png}
-\caption{Solution to BVP using Difference Method}
+\caption{Solution to 1d using Newtons Method}
+\end{figure}
+
+It should be noted that as this is a non-linear system, the result may converge
+to a different point given alternate initial guesses. 
+In this case, a guess of all 1's has been used to 
+produce the solution, but a guess of all -1's gives a different solution, shown 
+below.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{Task1d2.png}
+\caption{Solution to BVP using Newtons Method with alternate guess}
 \end{figure}
 
 %%%% Question 0.2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

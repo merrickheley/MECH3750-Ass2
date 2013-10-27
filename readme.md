@@ -1,27 +1,29 @@
-MECH3750 Assignment 1
-==========
+MECH3750-Ass2
+=============
 
-Q1
+MECH3750 Assignment 2 - BVP's and Newtons Method
 
-a. guess a few solutions, use one in task sheet
+University of Queensland 2013 Semester 2 
 
-b. talk about lehmur, show secant method working and y' y'' result for -1
+## Final Marks ##
+    0.1
+        a                                   [4/4]
+        b                                   [1/1]
+        c                                   [6/6]
+        d                                   [2/2]
+    0.2
+        a                                   [4/4]
+        b                                   [1/1]
+        c                                   [1/1]
+        d                                   [1/1]
 
-c. think about 3rd order, may cause errors
+                        Total  :  20/20
 
-d. 
+    Comments: Extremely good. Concise and correct. Use wider margins to save trees and to make it easy for tutors. Well done.
 
+## Notes ##
 
-Q2
+Most of the code here should be written in a fairly generic way which should be able to be reused.
 
-
-a. Find one solution
-
-
-b. Guess iterator, use python Sets
-
-
-c. Use wolfram or something, quadratic
-
-
-d.
+## License ##
+Free to use under the MIT license.
